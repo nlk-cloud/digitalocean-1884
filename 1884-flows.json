@@ -1,0 +1,332 @@
+[
+    {
+        "id": "8ae8da3d297319d0",
+        "type": "tab",
+        "label": "Flow 3",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "0811c43bf2f0d889",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "165.232.191.36",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "b67dcfaf8252d869",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#0eb8c0",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "true",
+            "allowTempTheme": "none",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 15,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "3a15a9c9dbe9a80a",
+        "type": "ui_tab",
+        "name": "Water level",
+        "icon": "wi-wu-sunny",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "cab9969f072c5f44",
+        "type": "ui_group",
+        "name": "level of water",
+        "tab": "3a15a9c9dbe9a80a",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "a4a52c22530e4c47",
+        "type": "json",
+        "z": "8ae8da3d297319d0",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 350,
+        "y": 140,
+        "wires": [
+            [
+                "b8b6e6524c639df6"
+            ]
+        ]
+    },
+    {
+        "id": "7757da6317f20162",
+        "type": "mqtt in",
+        "z": "8ae8da3d297319d0",
+        "name": "",
+        "topic": "Waterlevelsensor/Data/Json",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "0811c43bf2f0d889",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 140,
+        "wires": [
+            [
+                "a4a52c22530e4c47"
+            ]
+        ]
+    },
+    {
+        "id": "b8b6e6524c639df6",
+        "type": "function",
+        "z": "8ae8da3d297319d0",
+        "name": "convert voltage to water level",
+        "func": "// Observed 0.62V when there is no water and 0.72V when there is 0.3m o\n// of water level. Based on this, used y=mx+c and found m = 3 and C= -1.86\nvar level = 3*( msg.payload.voltagerd.volts) - 1.86;\npayload = level; \nreturn{payload};\n//return{ payload:msg.payload.voltagerd.volts} ;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 140,
+        "wires": [
+            [
+                "9b16ae36e5a00bbd",
+                "f697bff1760a2c0b"
+            ]
+        ]
+    },
+    {
+        "id": "9b16ae36e5a00bbd",
+        "type": "ui_gauge",
+        "z": "8ae8da3d297319d0",
+        "name": "",
+        "group": "cab9969f072c5f44",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "wave",
+        "title": "Height of water ",
+        "label": "  in meters",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "1.5",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 860,
+        "y": 140,
+        "wires": [],
+        "icon": "font-awesome/fa-thermometer-0"
+    },
+    {
+        "id": "358ab3acdd1c3254",
+        "type": "debug",
+        "z": "8ae8da3d297319d0",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "f697bff1760a2c0b",
+        "type": "function",
+        "z": "8ae8da3d297319d0",
+        "name": "Adding timestamp",
+        "func": "//var d = new Date();\nvar d = new Date(new Date().toLocaleString(\"en-US\", {timeZone: \"Asia/Kolkata\"}));\nvar date = {\n    \"year\":d.getFullYear(),\n    \"month\":(d.getMonth()+1),\n    \"day\":d.getDate()\n    \n};\ncur_date=Object.values(date).join('.');\nvar time = {\n    \"hours\":d.getHours(),\n    \"min\":d.getMinutes(),\n    \"sec\":d.getSeconds()\n    \n};\ncur_time=Object.values(time).join('.');\npayload = [cur_date, cur_time, msg.payload];\nmsg.payload = payload;\n/*msg.payload ={\n     cur_date,\n     cur_time,\n    \"Water Level\" : msg.payload\n    \n  \n}*/\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 280,
+        "wires": [
+            [
+                "cd4ef10ed5a09447",
+                "358ab3acdd1c3254"
+            ]
+        ]
+    },
+    {
+        "id": "cd4ef10ed5a09447",
+        "type": "function",
+        "z": "8ae8da3d297319d0",
+        "name": "Creating filename",
+        "func": "var d = new Date();\n\nvar yyyy = d.getFullYear();\nvar mm = d.getMonth() < 9 ? \"0\"+ (d.getMonth()+1) : (d.getMonth()+1);\nvar dd = d.getDate() < 10 ? \"0\" + d.getDate() : d.getDate();\nvar hh = d.getHours() < 10 ? \"0\" + d.getHours() : d.getHours();\nvar mmm = d.getMinutes() < 10 ? \"0\" + d.getMinutes() : d.getMinutes();\nvar ss = d.getSeconds() < 10 ? \"0\" + d.getSeconds() : d.getSeconds();\n\nmsg.fname = \"water_level\" + yyyy + mm +\".csv\";\n\nmsg.filename = \"/root/.node-red/user4/logs/\"+msg.fname;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 280,
+        "wires": [
+            [
+                "3cfa1c93b946f60e"
+            ]
+        ]
+    },
+    {
+        "id": "2d4c91bab471d7a0",
+        "type": "file",
+        "z": "8ae8da3d297319d0",
+        "name": "",
+        "filename": "",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1160,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3cfa1c93b946f60e",
+        "type": "csv",
+        "z": "8ae8da3d297319d0",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "once",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "Date, Time , Water Level",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 990,
+        "y": 300,
+        "wires": [
+            [
+                "2d4c91bab471d7a0"
+            ]
+        ]
+    }
+]
